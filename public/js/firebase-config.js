@@ -10,5 +10,6 @@ const firebaseConfig = {
   };
   
   // Inicializa Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }

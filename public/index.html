@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perros Perdidos - Ayuda a encontrar mascotas</title>
-    <script src="./js/firebase-config.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <!-- Leaflet CSS (para mapas) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         .card .card-image img {
@@ -16,7 +14,6 @@
             height: 250px;
             width: 100%;
         }
-
         .card-title {
             background-color: rgba(255, 255, 255, 0.7);
             padding: 5px 10px;
@@ -24,7 +21,6 @@
             width: auto;
             display: inline-block;
         }
-
         .found-badge {
             position: absolute;
             top: 10px;
@@ -35,7 +31,6 @@
             border-radius: 5px;
             font-weight: bold;
         }
-
         .lost-badge {
             position: absolute;
             top: 10px;
@@ -46,28 +41,22 @@
             border-radius: 5px;
             font-weight: bold;
         }
-
         .contact-btn {
             margin-top: 10px;
             width: 100%;
         }
-
-        /* Estilos para el mapa */
         .dog-map {
             height: 150px;
             margin: 10px 0;
             border-radius: 5px;
             border: 1px solid #ddd;
         }
-
-        /* Botón QR flotante */
         .qr-float-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 999;
         }
-
         @media (max-width: 600px) {
             .card .card-image img {
                 height: 180px;
@@ -88,387 +77,97 @@
         </div>
     </nav>
 
-    <!-- Botón flotante para simular QR (solo demo) -->
     <button class="btn-floating btn-large blue pulse qr-float-btn" id="simulate-qr">
         <i class="fas fa-qrcode"></i>
     </button>
 
-    <div class="section blue lighten-5">
-        <div class="container">
-            <h4 class="center-align">Historias de éxito</h4>
-            <p class="center-align">Estos perros ya han sido reunidos con sus dueños gracias a tu ayuda</p>
+    <!-- Contenido de tu aplicación (secciones de perros, formularios, etc.) -->
+    <!-- ... (mantén todo tu contenido HTML actual aquí) ... -->
 
-            <!-- Carrusel de perros encontrados -->
-            <div class="carousel">
-                <div class="carousel-item">
-                    <div class="card">
-                        <div class="card-image">
-                            <img
-                                src="https://images.unsplash.com/photo-1586671267731-da2cf3ceeb80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
-                            <span class="card-title">Max</span>
-                            <div class="found-badge">ENCONTRADO</div>
-                        </div>
-                        <div class="card-content">
-                            <p>Raza: Labrador</p>
-                            <p>Edad: 3 años</p>
-                            <p>Encontrado en: Parque Central</p>
-                            <p>Reunido el: 15/10/2023</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="card">
-                        <div class="card-image">
-                            <img
-                                src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
-                            <span class="card-title">Luna</span>
-                            <div class="found-badge">ENCONTRADO</div>
-                        </div>
-                        <div class="card-content">
-                            <p>Raza: Border Collie</p>
-                            <p>Edad: 2 años</p>
-                            <p>Encontrado en: Colonia Las Flores</p>
-                            <p>Reunido el: 22/10/2023</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="card">
-                        <div class="card-image">
-                            <img
-                                src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
-                            <span class="card-title">Rocky</span>
-                            <div class="found-badge">ENCONTRADO</div>
-                        </div>
-                        <div class="card-content">
-                            <p>Raza: Bulldog Francés</p>
-                            <p>Edad: 4 años</p>
-                            <p>Encontrado en: Avenida Principal</p>
-                            <p>Reunido el: 05/11/2023</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container" id="perdidos">
-        <h4 class="center-align">Perros Perdidos</h4>
-        <p class="center-align">Si has visto alguno de estos perros, por favor contacta al dueño</p>
-
-        <div class="row">
-            <!-- Tarjeta 1 (con mapa y botón de ubicación) -->
-            <div class="col s12 m6 l4">
-                <div class="card">
-                    <div class="card-image">
-                        <img
-                            src="https://images.unsplash.com/photo-1544568100-847a948585b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
-                        <span class="card-title">Toby</span>
-                        <div class="lost-badge">PERDIDO</div>
-                    </div>
-                    <div class="card-content">
-                        <p><strong>Raza:</strong> Beagle</p>
-                        <p><strong>Edad:</strong> 2 años</p>
-                        <p><strong>Última vez visto:</strong> Parque Canino, 18/11/2023</p>
-                        <p><strong>Características:</strong> Collar azul, mancha blanca en la pata derecha</p>
-
-                        <!-- Mapa y botón de geolocalización -->
-                        <div id="map-1" class="dog-map"></div>
-                        <button class="btn waves-effect waves-light green locate-btn" data-id="1">
-                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
-                        </button>
-                    </div>
-                    <div class="card-action">
-                        <a href="#contacto-toby" class="waves-effect waves-light btn blue contact-btn">
-                            <i class="fas fa-phone-alt"></i> Contactar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tarjeta 2 -->
-            <div class="col s12 m6 l4">
-                <div class="card">
-                    <div class="card-image">
-                        <img
-                            src="https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
-                        <span class="card-title">Coco</span>
-                        <div class="lost-badge">PERDIDO</div>
-                    </div>
-                    <div class="card-content">
-                        <p><strong>Raza:</strong> Chihuahua</p>
-                        <p><strong>Edad:</strong> 1 año</p>
-                        <p><strong>Última vez visto:</strong> Calle Principal #123, 20/11/2023</p>
-                        <p><strong>Características:</strong> Muy pequeño, orejas grandes</p>
-
-                        <div id="map-2" class="dog-map"></div>
-                        <button class="btn waves-effect waves-light green locate-btn" data-id="2">
-                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
-                        </button>
-                    </div>
-                    <div class="card-action">
-                        <a href="#contacto-coco" class="waves-effect waves-light btn blue contact-btn">
-                            <i class="fas fa-phone-alt"></i> Contactar
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tarjeta 3 -->
-            <div class="col s12 m6 l4">
-                <div class="card">
-                    <div class="card-image">
-                        <img
-                            src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
-                        <span class="card-title">Thor</span>
-                        <div class="lost-badge">PERDIDO</div>
-                    </div>
-                    <div class="card-content">
-                        <p><strong>Raza:</strong> Husky Siberiano</p>
-                        <p><strong>Edad:</strong> 3 años</p>
-                        <p><strong>Última vez visto:</strong> Bosque Municipal, 22/11/2023</p>
-                        <p><strong>Características:</strong> Ojos azules, muy energético</p>
-
-                        <div id="map-3" class="dog-map"></div>
-                        <button class="btn waves-effect waves-light green locate-btn" data-id="3">
-                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
-                        </button>
-                    </div>
-                    <div class="card-action">
-                        <a href="#contacto-thor" class="waves-effect waves-light btn blue contact-btn">
-                            <i class="fas fa-phone-alt"></i> Contactar
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sección para reportar perros perdidos -->
-    <div class="section blue lighten-5" id="reportar">
-        <div class="container">
-            <div class="row">
-                <div class="col s12">
-                    <h4 class="center-align">¿Has perdido a tu perro?</h4>
-                    <p class="center-align">Completa este formulario para agregarlo a nuestra base de datos</p>
-
-                    <div class="card">
-                        <div class="card-content">
-                            <form id="report-form">
-                                <div class="row">
-                                    <div class="input-field col s12 m6">
-                                        <input id="nombre" type="text" class="validate" required>
-                                        <label for="nombre">Nombre del perro</label>
-                                    </div>
-                                    <div class="input-field col s12 m6">
-                                        <input id="raza" type="text" class="validate" required>
-                                        <label for="raza">Raza</label>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="input-field col s12 m6">
-                                        <input id="edad" type="text" class="validate" required>
-                                        <label for="edad">Edad</label>
-                                    </div>
-                                    <div class="input-field col s12 m6">
-                                        <input id="color" type="text" class="validate" required>
-                                        <label for="color">Color principal</label>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="input-field col s12">
-                                        <textarea id="caracteristicas" class="materialize-textarea" required></textarea>
-                                        <label for="caracteristicas">Características distintivas</label>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="input-field col s12 m6">
-                                        <input id="ubicacion" type="text" class="validate" required>
-                                        <label for="ubicacion">Último lugar donde fue visto</label>
-                                    </div>
-                                    <div class="input-field col s12 m6">
-                                        <input id="fecha" type="text" class="datepicker" required>
-                                        <label for="fecha">Fecha en que se perdió</label>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="input-field col s12 m6">
-                                        <input id="telefono" type="tel" class="validate" required>
-                                        <label for="telefono">Teléfono de contacto</label>
-                                    </div>
-                                    <div class="input-field col s12 m6">
-                                        <input id="email" type="email" class="validate" required>
-                                        <label for="email">Correo electrónico</label>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col s12 center-align">
-                                        <button class="btn waves-effect waves-light blue" type="submit">
-                                            Reportar perro perdido
-                                            <i class="material-icons right">send</i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="page-footer blue darken-3">
-        <div class="container">
-            <div class="row">
-                <div class="col l6 s12">
-                    <h5 class="white-text">Perros Perdidos</h5>
-                    <p class="grey-text text-lighten-4">Ayudando a reunir mascotas con sus dueños desde 2023.</p>
-                </div>
-                <div class="col l4 offset-l2 s12">
-                    <h5 class="white-text">Contacto</h5>
-                    <ul>
-                        <li><a class="grey-text text-lighten-3" href="#!">info@perrosperdidos.com</a></li>
-                        <li><a class="grey-text text-lighten-3" href="#!">Tel: 555-123-4567</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="footer-copyright">
-            <div class="container">
-                © 2023 Perros Perdidos
-                <a class="grey-text text-lighten-4 right" href="#!">Más información</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="/js/firebase-config.js"></script>
-    <script src="./js/firebase-config.js"></script>
+    <!-- Scripts al final del body (ORDEN CRUCIAL) -->
+    <!-- 1. jQuery y Materialize -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <!-- Leaflet JS (para mapas) -->
+    
+    <!-- 2. Firebase (primero el core, luego servicios) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <!-- 3. Configuración de Firebase (SOLO UNA VEZ) -->
+    <script src="/js/firebase-config.js"></script>
+    
+    <!-- 4. Leaflet (mapas) -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
+    
+    <!-- 5. Tu código principal (todo en un solo script) -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicializar componentes de Materialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar componentes
             M.Carousel.init(document.querySelectorAll('.carousel'), {
                 duration: 200,
                 indicators: true
             });
+            
             M.Datepicker.init(document.querySelectorAll('.datepicker'), {
                 format: 'dd/mm/yyyy',
                 autoClose: true
             });
 
-            // Simular escaneo de QR (botón flotante)
-            document.getElementById('simulate-qr').addEventListener('click', function () {
-                const randomDog = Math.floor(Math.random() * 3) + 1; // 1-3
+            // Botón QR simulado
+            document.getElementById('simulate-qr').addEventListener('click', function() {
+                const randomDog = Math.floor(Math.random() * 3) + 1;
                 M.toast({
                     html: `🔍 QR escaneado: Redirigiendo a perro #${randomDog}`,
-                    classes: 'blue darken-2',
-                    displayLength: 3000
+                    classes: 'blue darken-2'
                 });
-                // Desplazarse a la tarjeta del perro (simulación)
-                document.getElementById(`map-${randomDog}`).scrollIntoView({ behavior: 'smooth' });
+                document.getElementById(`map-${randomDog}`).scrollIntoView();
             });
 
-            // Botones de geolocalización
+            // Geolocalización
             document.querySelectorAll('.locate-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function() {
                     const dogId = this.getAttribute('data-id');
-                    locateDog(dogId);
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const { latitude, longitude } = position.coords;
+                                updateDogLocation(dogId, latitude, longitude);
+                            },
+                            (error) => M.toast({html: `Error: ${error.message}`, classes: 'red'})
+                        );
+                    }
                 });
             });
 
-            // Formulario de reporte
-            document.getElementById('report-form').addEventListener('submit', function (e) {
+            // Formulario
+            document.getElementById('report-form').addEventListener('submit', function(e) {
                 e.preventDefault();
-                M.toast({
-                    html: '¡Perro reportado correctamente!',
-                    classes: 'green'
-                });
+                M.toast({html: '¡Reporte exitoso!', classes: 'green'});
                 this.reset();
             });
         });
 
-        // Función para obtener ubicación
-        function locateDog(dogId) {
-            if (navigator.geolocation) {
-                M.toast({
-                    html: 'Obteniendo ubicación...',
-                    classes: 'blue'
-                });
-
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        updateDogLocation(dogId, latitude, longitude);
-                    },
-                    (error) => {
-                        M.toast({
-                            html: `Error: ${error.message}`,
-                            classes: 'red'
-                        });
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                M.toast({
-                    html: 'Tu navegador no soporta geolocalización',
-                    classes: 'red'
-                });
-            }
-        }
-
-        // Actualizar mapa con la ubicación
         function updateDogLocation(dogId, lat, lng) {
             const mapDiv = document.getElementById(`map-${dogId}`);
-
-            // Crear mapa si no existe
+            
             if (!mapDiv._map) {
-                const map = L.map(mapDiv).setView([lat, lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                mapDiv._map = map;
-            } else {
-                mapDiv._map.setView([lat, lng], 15);
+                mapDiv._map = L.map(mapDiv).setView([lat, lng], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapDiv._map);
             }
-
-            // Limpiar marcadores anteriores y añadir nuevo
-            if (mapDiv._marker) {
-                mapDiv._map.removeLayer(mapDiv._marker);
-            }
+            
+            if (mapDiv._marker) mapDiv._map.removeLayer(mapDiv._marker);
             mapDiv._marker = L.marker([lat, lng]).addTo(mapDiv._map)
-                .bindPopup("Ubicación reportada: " + new Date().toLocaleTimeString())
-                .openPopup();
-
-            M.toast({
-                html: `¡Ubicación de perro #${dogId} actualizada!`,
-                classes: 'green'
-            });
+                .bindPopup(`Ubicación: ${new Date().toLocaleString()}`);
+            
+            M.toast({html: `Ubicación actualizada!`, classes: 'green'});
         }
-        // Obtener ID del perro de la URL (si viene de un QR)
+
+        // Verificar parámetro de URL
         const urlParams = new URLSearchParams(window.location.search);
         const perroId = urlParams.get('id');
-
         if (perroId) {
-            // Mostrar alerta indicando qué perro se escaneó (opcional)
-            M.toast({
-                html: `Escaneaste el QR del perro ID: ${perroId}`,
-                classes: 'blue'
-            });
-
-            // Aquí podrías resaltar la tarjeta del perro correspondiente
-            // Ejemplo: document.querySelector(`.card[data-id="${perroId}"]`).style.border = "2px solid red";
+            document.querySelector(`.card[data-id="${perroId}"]`)?.scrollIntoView();
         }
     </script>
 </body>
-
 </html>
