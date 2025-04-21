@@ -1,5 +1,11 @@
 {
-    "projects": {
-      "default": "perros-perdidos-59490"
+    "hosting": {
+      "public": "public",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     }
   }
