@@ -450,20 +450,23 @@
             });
         }
         // Obtener ID del perro de la URL (si viene de un QR)
-const urlParams = new URLSearchParams(window.location.search);
-const perroId = urlParams.get('id');
+        const urlParams = new URLSearchParams(window.location.search);
+        const perroId = urlParams.get('id');
 
-if (perroId) {
-    // Mostrar alerta indicando qué perro se escaneó (opcional)
-    M.toast({
-        html: `Escaneaste el QR del perro ID: ${perroId}`,
-        classes: 'blue'
-    });
+        if (perroId) {
+            // Mostrar alerta indicando qué perro se escaneó (opcional)
+            M.toast({
+                html: `Escaneaste el QR del perro ID: ${perroId}`,
+                classes: 'blue'
+            });
 
-    // Aquí podrías resaltar la tarjeta del perro correspondiente
-    // Ejemplo: document.querySelector(`.card[data-id="${perroId}"]`).style.border = "2px solid red";
-}
+            // Aquí podrías resaltar la tarjeta del perro correspondiente
+            // Ejemplo: document.querySelector(`.card[data-id="${perroId}"]`).style.border = "2px solid red";
+        }
     </script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="/js/firebase-config.js"></script>
 </body>
 
 </html>
