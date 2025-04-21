@@ -349,96 +349,82 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicializar componentes
-            M.Carousel.init(document.querySelectorAll('.carousel'), {
-                duration: 200,
-                indicators: true
-            });
-
-            M.Datepicker.init(document.querySelectorAll('.datepicker'), {
-                format: 'dd/mm/yyyy',
-                autoClose: true
-            });
-
-            // Botón QR simulado
-            document.getElementById('simulate-qr').addEventListener('click', function () {
-                const randomDog = Math.floor(Math.random() * 3) + 1;
-                M.toast({
-                    html: `🔍 QR escaneado: Redirigiendo a perro #${randomDog}`,
-                    classes: 'blue darken-2',
-                    displayLength: 3000
-                });
-                document.getElementById(`map-${randomDog}`).scrollIntoView({ behavior: 'smooth' });
-            });
-
-            // Botones de geolocalización
-            document.querySelectorAll('.locate-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const dogId = this.getAttribute('data-id');
-                    locateDog(dogId);
-                });
-            });
-
-            // Formulario de reporte
-            document.getElementById('report-form').addEventListener('submit', function (e) {
-                e.preventDefault();
-                M.toast({
-                    html: '¡Perro reportado correctamente!',
-                    classes: 'green'
-                });
-                this.reset();
-            });
-
-            // Verificar parámetro de URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const perroId = urlParams.get('id');
-            if (perroId) {
-                M.toast({
-                    html: `Escaneaste el QR del perro ID: ${perroId}`,
-                    classes: 'blue'
-                });
-                document.querySelector(`.card[data-id="${perroId}"]`)?.scrollIntoView();
-            }
+        // Función para reportar ubicación DESDE EL CELULAR
+function reportarUbicacion(dogId) {
+    if (!navigator.geolocation) {
+      M.toast({html: 'Tu navegador no soporta geolocalización', classes: 'red'});
+      return;
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
+        // Guardar en Firebase
+        database.ref('perros/' + dogId).update({
+          ubicacion: {
+            lat: lat,
+            lng: lng
+          },
+          timestamp: firebase.database.ServerValue.TIMESTAMP
         });
-
-        // Función para obtener ubicación
-        function locateDog(dogId) {
-  navigator.geolocation.getCurrentPosition(position => {
-    const { latitude: lat, longitude: lng } = position.coords;
-    
-    // Guardar en Firebase
-    database.ref('perros/' + dogId).set({
-      ubicacion: { lat, lng },
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
-    
-    updateDogLocation(dogId, lat, lng); // Actualizar mapa local
-  });
-}
-        // Actualizar mapa con la ubicación
-        function updateDogLocation(dogId, lat, lng) {
-            const mapDiv = document.getElementById(`map-${dogId}`);
-
-            // Crear mapa si no existe
-            if (!mapDiv._map) {
-                mapDiv._map = L.map(mapDiv).setView([lat, lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapDiv._map);
-            } else {
-                mapDiv._map.setView([lat, lng], 15);
-            }
-
-            // Limpiar marcadores anteriores y añadir nuevo
-            if (mapDiv._marker) mapDiv._map.removeLayer(mapDiv._marker);
-            mapDiv._marker = L.marker([lat, lng]).addTo(mapDiv._map)
-                .bindPopup(`Ubicación reportada: ${new Date().toLocaleTimeString()}`)
-                .openPopup();
-
-            M.toast({
-                html: `¡Ubicación de perro #${dogId} actualizada!`,
-                classes: 'green'
-            });
+        
+        M.toast({html: 'Ubicación reportada!', classes: 'green'});
+      },
+      (error) => {
+        M.toast({html: `Error: ${error.message}`, classes: 'red'});
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+  
+  // Escuchar cambios EN LA LAPTOP
+  function iniciarEscuchaFirebase() {
+    database.ref('perros/').on('value', (snapshot) => {
+      const datos = snapshot.val() || {};
+      
+      Object.keys(datos).forEach(dogId => {
+        if (datos[dogId].ubicacion) {
+          const { lat, lng } = datos[dogId].ubicacion;
+          actualizarMapa(dogId, lat, lng);
         }
+      });
+    });
+  }
+  
+  // Función mejorada para actualizar mapas
+  function actualizarMapa(dogId, lat, lng) {
+    const mapaDiv = document.getElementById(`map-${dogId}`);
+    if (!mapaDiv) return;
+  
+    // Destruir mapa existente si hay uno
+    if (mapaDiv._map) {
+      mapaDiv._map.remove();
+    }
+  
+    // Crear nuevo mapa
+    mapaDiv._map = L.map(mapaDiv).setView([lat, lng], 15);
+    
+    // Capa de mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(mapaDiv._map);
+    
+    // Marcador con popup
+    mapaDiv._marker = L.marker([lat, lng]).addTo(mapaDiv._map)
+      .bindPopup(`<b>Perro #${dogId}</b><br>Actualizado: ${new Date().toLocaleTimeString()}`)
+      .openPopup();
+  }
+  
+  // Inicialización al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    // Iniciar Materialize
+    M.AutoInit();
+    
+    // Iniciar escucha de Firebase
+    iniciarEscuchaFirebase();
+  });
     </script>
 </body>
 
