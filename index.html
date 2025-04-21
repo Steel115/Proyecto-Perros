@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             height: 250px;
             width: 100%;
         }
+
         .card-title {
             background-color: rgba(255, 255, 255, 0.7);
             padding: 5px 10px;
@@ -20,6 +22,7 @@
             width: auto;
             display: inline-block;
         }
+
         .found-badge {
             position: absolute;
             top: 10px;
@@ -30,6 +33,7 @@
             border-radius: 5px;
             font-weight: bold;
         }
+
         .lost-badge {
             position: absolute;
             top: 10px;
@@ -40,22 +44,26 @@
             border-radius: 5px;
             font-weight: bold;
         }
+
         .contact-btn {
             margin-top: 10px;
             width: 100%;
         }
+
         .dog-map {
             height: 150px;
             margin: 10px 0;
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+
         .qr-float-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 999;
         }
+
         @media (max-width: 600px) {
             .card .card-image img {
                 height: 180px;
@@ -63,6 +71,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="blue darken-3">
         <div class="nav-wrapper container">
@@ -83,12 +92,13 @@
         <div class="container">
             <h4 class="center-align">Historias de éxito</h4>
             <p class="center-align">Estos perros ya han sido reunidos con sus dueños gracias a tu ayuda</p>
-            
+
             <div class="carousel">
                 <div class="carousel-item">
                     <div class="card">
                         <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1586671267731-da2cf3ceeb80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+                            <img
+                                src="https://images.unsplash.com/photo-1586671267731-da2cf3ceeb80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
                             <span class="card-title">Max</span>
                             <div class="found-badge">ENCONTRADO</div>
                         </div>
@@ -103,7 +113,8 @@
                 <div class="carousel-item">
                     <div class="card">
                         <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+                            <img
+                                src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
                             <span class="card-title">Luna</span>
                             <div class="found-badge">ENCONTRADO</div>
                         </div>
@@ -118,7 +129,8 @@
                 <div class="carousel-item">
                     <div class="card">
                         <div class="card-image">
-                            <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+                            <img
+                                src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
                             <span class="card-title">Rocky</span>
                             <div class="found-badge">ENCONTRADO</div>
                         </div>
@@ -137,13 +149,14 @@
     <div class="container" id="perdidos">
         <h4 class="center-align">Perros Perdidos</h4>
         <p class="center-align">Si has visto alguno de estos perros, por favor contacta al dueño</p>
-        
+
         <div class="row">
             <!-- Perro 1 - Toby -->
             <div class="col s12 m6 l4">
                 <div class="card" data-id="1">
                     <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+                        <img
+                            src="https://images.unsplash.com/photo-1544568100-847a948585b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
                         <span class="card-title">Toby</span>
                         <div class="lost-badge">PERDIDO</div>
                     </div>
@@ -152,7 +165,7 @@
                         <p><strong>Edad:</strong> 2 años</p>
                         <p><strong>Última vez visto:</strong> Parque Canino, 18/11/2023</p>
                         <p><strong>Características:</strong> Collar azul, mancha blanca en la pata derecha</p>
-                        
+
                         <div id="map-1" class="dog-map"></div>
                         <button class="btn waves-effect waves-light green locate-btn" data-id="1">
                             <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
@@ -170,7 +183,8 @@
             <div class="col s12 m6 l4">
                 <div class="card" data-id="2">
                     <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+                        <img
+                            src="https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
                         <span class="card-title">Coco</span>
                         <div class="lost-badge">PERDIDO</div>
                     </div>
@@ -179,7 +193,7 @@
                         <p><strong>Edad:</strong> 1 año</p>
                         <p><strong>Última vez visto:</strong> Calle Principal #123, 20/11/2023</p>
                         <p><strong>Características:</strong> Muy pequeño, orejas grandes</p>
-                        
+
                         <div id="map-2" class="dog-map"></div>
                         <button class="btn waves-effect waves-light green locate-btn" data-id="2">
                             <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
@@ -197,7 +211,8 @@
             <div class="col s12 m6 l4">
                 <div class="card" data-id="3">
                     <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+                        <img
+                            src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
                         <span class="card-title">Thor</span>
                         <div class="lost-badge">PERDIDO</div>
                     </div>
@@ -206,7 +221,7 @@
                         <p><strong>Edad:</strong> 3 años</p>
                         <p><strong>Última vez visto:</strong> Bosque Municipal, 22/11/2023</p>
                         <p><strong>Características:</strong> Ojos azules, muy energético</p>
-                        
+
                         <div id="map-3" class="dog-map"></div>
                         <button class="btn waves-effect waves-light green locate-btn" data-id="3">
                             <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
@@ -229,7 +244,7 @@
                 <div class="col s12">
                     <h4 class="center-align">¿Has perdido a tu perro?</h4>
                     <p class="center-align">Completa este formulario para agregarlo a nuestra base de datos</p>
-                    
+
                     <div class="card">
                         <div class="card-content">
                             <form id="report-form">
@@ -243,7 +258,7 @@
                                         <label for="raza">Raza</label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="input-field col s12 m6">
                                         <input id="edad" type="text" class="validate" required>
@@ -254,14 +269,14 @@
                                         <label for="color">Color principal</label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <textarea id="caracteristicas" class="materialize-textarea" required></textarea>
                                         <label for="caracteristicas">Características distintivas</label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="input-field col s12 m6">
                                         <input id="ubicacion" type="text" class="validate" required>
@@ -272,7 +287,7 @@
                                         <label for="fecha">Fecha en que se perdió</label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="input-field col s12 m6">
                                         <input id="telefono" type="tel" class="validate" required>
@@ -283,7 +298,7 @@
                                         <label for="email">Correo electrónico</label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="col s12 center-align">
                                         <button class="btn waves-effect waves-light blue" type="submit">
@@ -325,28 +340,29 @@
     </footer>
 
     <!-- Scripts al final del body -->
+    <!-- Scripts (asegúrate que todas las rutas usen ./ o / correctamente) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="/js/firebase-config.js"></script>
+    <script src="./js/firebase-config.js"></script> <!-- Ruta relativa desde raíz -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Inicializar componentes
             M.Carousel.init(document.querySelectorAll('.carousel'), {
                 duration: 200,
                 indicators: true
             });
-            
+
             M.Datepicker.init(document.querySelectorAll('.datepicker'), {
                 format: 'dd/mm/yyyy',
                 autoClose: true
             });
 
             // Botón QR simulado
-            document.getElementById('simulate-qr').addEventListener('click', function() {
+            document.getElementById('simulate-qr').addEventListener('click', function () {
                 const randomDog = Math.floor(Math.random() * 3) + 1;
                 M.toast({
                     html: `🔍 QR escaneado: Redirigiendo a perro #${randomDog}`,
@@ -358,14 +374,14 @@
 
             // Botones de geolocalización
             document.querySelectorAll('.locate-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const dogId = this.getAttribute('data-id');
                     locateDog(dogId);
                 });
             });
 
             // Formulario de reporte
-            document.getElementById('report-form').addEventListener('submit', function(e) {
+            document.getElementById('report-form').addEventListener('submit', function (e) {
                 e.preventDefault();
                 M.toast({
                     html: '¡Perro reportado correctamente!',
@@ -393,7 +409,7 @@
                     html: 'Obteniendo ubicación...',
                     classes: 'blue'
                 });
-                
+
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const { latitude: lat, longitude: lng } = position.coords;
@@ -418,7 +434,7 @@
         // Actualizar mapa con la ubicación
         function updateDogLocation(dogId, lat, lng) {
             const mapDiv = document.getElementById(`map-${dogId}`);
-            
+
             // Crear mapa si no existe
             if (!mapDiv._map) {
                 mapDiv._map = L.map(mapDiv).setView([lat, lng], 15);
@@ -426,13 +442,13 @@
             } else {
                 mapDiv._map.setView([lat, lng], 15);
             }
-            
+
             // Limpiar marcadores anteriores y añadir nuevo
             if (mapDiv._marker) mapDiv._map.removeLayer(mapDiv._marker);
             mapDiv._marker = L.marker([lat, lng]).addTo(mapDiv._map)
                 .bindPopup(`Ubicación reportada: ${new Date().toLocaleTimeString()}`)
                 .openPopup();
-            
+
             M.toast({
                 html: `¡Ubicación de perro #${dogId} actualizada!`,
                 classes: 'green'
@@ -440,4 +456,5 @@
         }
     </script>
 </body>
+
 </html>
