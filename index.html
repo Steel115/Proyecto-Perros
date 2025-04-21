@@ -167,9 +167,9 @@
                         <p><strong>Características:</strong> Collar azul, mancha blanca en la pata derecha</p>
 
                         <div id="map-1" class="dog-map"></div>
-                        <button class="btn waves-effect waves-light green locate-btn" data-id="1">
-                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
-                        </button>
+                        <button class="btn locate-btn" data-id="1" onclick="reportarUbicacion(1)">
+                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación Actual
+                          </button>
                     </div>
                     <div class="card-action">
                         <a href="#contacto-toby" class="waves-effect waves-light btn blue contact-btn">
@@ -195,9 +195,9 @@
                         <p><strong>Características:</strong> Muy pequeño, orejas grandes</p>
 
                         <div id="map-2" class="dog-map"></div>
-                        <button class="btn waves-effect waves-light green locate-btn" data-id="2">
-                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
-                        </button>
+                        <button class="btn locate-btn" data-id="2" onclick="reportarUbicacion(1)">
+                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación Actual
+                          </button>
                     </div>
                     <div class="card-action">
                         <a href="#contacto-coco" class="waves-effect waves-light btn blue contact-btn">
@@ -223,9 +223,9 @@
                         <p><strong>Características:</strong> Ojos azules, muy energético</p>
 
                         <div id="map-3" class="dog-map"></div>
-                        <button class="btn waves-effect waves-light green locate-btn" data-id="3">
-                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación
-                        </button>
+                        <button class="btn locate-btn" data-id="3" onclick="reportarUbicacion(1)">
+                            <i class="fas fa-map-marker-alt"></i> Reportar Ubicación Actual
+                          </button>
                     </div>
                     <div class="card-action">
                         <a href="#contacto-thor" class="waves-effect waves-light btn blue contact-btn">
@@ -404,18 +404,18 @@
 
         // Función para obtener ubicación
         function locateDog(dogId) {
-            navigator.geolocation.getCurrentPosition(position => {
-              const { latitude: lat, longitude: lng } = position.coords;
-              
-              // Guardar en Firebase
-              database.ref('perros/' + dogId).set({
-                ubicacion: { lat, lng },
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-              });
-              
-              updateDogLocation(dogId, lat, lng); // Actualizar mapa local
-            });
-          }
+  navigator.geolocation.getCurrentPosition(position => {
+    const { latitude: lat, longitude: lng } = position.coords;
+    
+    // Guardar en Firebase
+    database.ref('perros/' + dogId).set({
+      ubicacion: { lat, lng },
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+    
+    updateDogLocation(dogId, lat, lng); // Actualizar mapa local
+  });
+}
         // Actualizar mapa con la ubicación
         function updateDogLocation(dogId, lat, lng) {
             const mapDiv = document.getElementById(`map-${dogId}`);
