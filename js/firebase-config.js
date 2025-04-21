@@ -13,3 +13,16 @@ const firebaseConfig = {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
+  function locateDog(dogId) {
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude: lat, longitude: lng } = position.coords;
+      
+      // Guardar en Firebase
+      database.ref('perros/' + dogId).set({
+        ubicacion: { lat, lng },
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+      
+      updateDogLocation(dogId, lat, lng); // Actualizar mapa local
+    });
+  }

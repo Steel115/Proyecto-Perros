@@ -404,33 +404,18 @@
 
         // Función para obtener ubicación
         function locateDog(dogId) {
-            if (navigator.geolocation) {
-                M.toast({
-                    html: 'Obteniendo ubicación...',
-                    classes: 'blue'
-                });
-
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude: lat, longitude: lng } = position.coords;
-                        updateDogLocation(dogId, lat, lng);
-                    },
-                    (error) => {
-                        M.toast({
-                            html: `Error: ${error.message}`,
-                            classes: 'red'
-                        });
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                M.toast({
-                    html: 'Tu navegador no soporta geolocalización',
-                    classes: 'red'
-                });
-            }
-        }
-
+            navigator.geolocation.getCurrentPosition(position => {
+              const { latitude: lat, longitude: lng } = position.coords;
+              
+              // Guardar en Firebase
+              database.ref('perros/' + dogId).set({
+                ubicacion: { lat, lng },
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+              });
+              
+              updateDogLocation(dogId, lat, lng); // Actualizar mapa local
+            });
+          }
         // Actualizar mapa con la ubicación
         function updateDogLocation(dogId, lat, lng) {
             const mapDiv = document.getElementById(`map-${dogId}`);
