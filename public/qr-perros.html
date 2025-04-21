@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de QR - Perros Perdidos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            padding: 20px;
+            text-align: center;
+        }
+        .qr-card {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .qr-img {
+            width: 150px;
+            height: 150px;
+        }
+        h4 {
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h4>Generador de QR para Perros Perdidos</h4>
+        <p>Imprime estos códigos QR y colócalos en los collares de los perros.</p>
+        
+        <!-- QR para Toby (ID 1) -->
+        <div class="qr-card">
+            <h5>Toby</h5>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://perros-perdidos.netlify.app/?id=1" 
+                 class="qr-img" 
+                 alt="QR para Toby">
+            <p>ID: 1</p>
+        </div>
+
+        <!-- QR para Coco (ID 2) -->
+        <div class="qr-card">
+            <h5>Coco</h5>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://perros-perdidos.netlify.app/?id=2" 
+                 class="qr-img" 
+                 alt="QR para Coco">
+            <p>ID: 2</p>
+        </div>
+
+        <div class="qr-card">
+            <h5>Thor</h5>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://perros-perdidos.netlify.app/?id=3" 
+                 class="qr-img" 
+                 alt="QR para Coco">
+            <p>ID: 2</p>
+        </div>
+
+        <!-- Agrega más QR según necesites -->
+    </div>
+</body>
+</html>

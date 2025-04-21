@@ -449,6 +449,20 @@
                 classes: 'green'
             });
         }
+        // Obtener ID del perro de la URL (si viene de un QR)
+const urlParams = new URLSearchParams(window.location.search);
+const perroId = urlParams.get('id');
+
+if (perroId) {
+    // Mostrar alerta indicando qué perro se escaneó (opcional)
+    M.toast({
+        html: `Escaneaste el QR del perro ID: ${perroId}`,
+        classes: 'blue'
+    });
+
+    // Aquí podrías resaltar la tarjeta del perro correspondiente
+    // Ejemplo: document.querySelector(`.card[data-id="${perroId}"]`).style.border = "2px solid red";
+}
     </script>
 </body>
 
