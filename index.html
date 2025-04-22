@@ -9,6 +9,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
+        footer {
+            text-align: center;
+            background: #007BFF;
+            color: white;
+            padding: 1em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .team {
+            margin-top: 10px;
+        }
+
+        .team a {
+            margin: 0 10px;
+        }
+
+        .team img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        #jess {
+            background-color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
         .card .card-image img {
             object-fit: cover;
             height: 250px;
@@ -51,10 +82,10 @@
         }
 
         .dog-map {
-            height: 150px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            height: 250px;
+            width: 100%;
+            background-color: #f5f5f5;
+            /* Color temporal mientras carga */
         }
 
         .qr-float-btn {
@@ -169,7 +200,7 @@
                         <div id="map-1" class="dog-map"></div>
                         <button class="btn locate-btn" data-id="1" onclick="reportarUbicacion(1)">
                             <i class="fas fa-map-marker-alt"></i> Reportar Ubicación Actual
-                          </button>
+                        </button>
                     </div>
                     <div class="card-action">
                         <a href="#contacto-toby" class="waves-effect waves-light btn blue contact-btn">
@@ -195,9 +226,9 @@
                         <p><strong>Características:</strong> Muy pequeño, orejas grandes</p>
 
                         <div id="map-2" class="dog-map"></div>
-                        <button class="btn locate-btn" data-id="2" onclick="reportarUbicacion(1)">
+                        <button class="btn locate-btn" data-id="2" onclick="reportarUbicacion(2)">
                             <i class="fas fa-map-marker-alt"></i> Reportar Ubicación Actual
-                          </button>
+                        </button>
                     </div>
                     <div class="card-action">
                         <a href="#contacto-coco" class="waves-effect waves-light btn blue contact-btn">
@@ -223,9 +254,9 @@
                         <p><strong>Características:</strong> Ojos azules, muy energético</p>
 
                         <div id="map-3" class="dog-map"></div>
-                        <button class="btn locate-btn" data-id="3" onclick="reportarUbicacion(1)">
+                        <button class="btn locate-btn" data-id="3" onclick="reportarUbicacion(3)">
                             <i class="fas fa-map-marker-alt"></i> Reportar Ubicación Actual
-                          </button>
+                        </button>
                     </div>
                     <div class="card-action">
                         <a href="#contacto-thor" class="waves-effect waves-light btn blue contact-btn">
@@ -325,17 +356,18 @@
                 <div class="col l4 offset-l2 s12">
                     <h5 class="white-text">Contacto</h5>
                     <ul>
-                        <li><a class="grey-text text-lighten-3" href="#!">info@perrosperdidos.com</a></li>
-                        <li><a class="grey-text text-lighten-3" href="#!">Tel: 555-123-4567</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">reportar@perrosperdidos.com</a></li>
+                        <li><a class="grey-text text-lighten-3" href="#!">Tel: 55-27-09-34-94</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="footer-copyright">
-            <div class="container">
-                © 2023 Perros Perdidos
-                <a class="grey-text text-lighten-4 right" href="#!">Más información</a>
-            </div>
+        <p>&copy; 2024 Ingeniería del Conocimiento. Todos los derechos reservados.</p>
+        <div class="team">
+            <img src="img/vale.png" alt="Vale">
+            <img src="img/pame.jpg" alt="Pamela">
+            <img src="img/enrique.jpeg" alt="Enrique">
+            <img src="img/jess.png" alt="Jessica" id="jess">
         </div>
     </footer>
 
@@ -350,81 +382,81 @@
 
     <script>
         // Función para reportar ubicación DESDE EL CELULAR
-function reportarUbicacion(dogId) {
-    if (!navigator.geolocation) {
-      M.toast({html: 'Tu navegador no soporta geolocalización', classes: 'red'});
-      return;
-    }
-  
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        
-        // Guardar en Firebase
-        database.ref('perros/' + dogId).update({
-          ubicacion: {
-            lat: lat,
-            lng: lng
-          },
-          timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
-        
-        M.toast({html: 'Ubicación reportada!', classes: 'green'});
-      },
-      (error) => {
-        M.toast({html: `Error: ${error.message}`, classes: 'red'});
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  }
-  
-  // Escuchar cambios EN LA LAPTOP
-  function iniciarEscuchaFirebase() {
-    database.ref('perros/').on('value', (snapshot) => {
-      const datos = snapshot.val() || {};
-      
-      Object.keys(datos).forEach(dogId => {
-        if (datos[dogId].ubicacion) {
-          const { lat, lng } = datos[dogId].ubicacion;
-          actualizarMapa(dogId, lat, lng);
+        function reportarUbicacion(dogId) {
+            if (!navigator.geolocation) {
+                M.toast({ html: 'Tu navegador no soporta geolocalización', classes: 'red' });
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Guardar en Firebase
+                    database.ref('perros/' + dogId).update({
+                        ubicacion: {
+                            lat: lat,
+                            lng: lng
+                        },
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    M.toast({ html: 'Ubicación reportada!', classes: 'green' });
+                },
+                (error) => {
+                    M.toast({ html: `Error: ${error.message}`, classes: 'red' });
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
         }
-      });
-    });
-  }
-  
-  // Función mejorada para actualizar mapas
-  function actualizarMapa(dogId, lat, lng) {
-    const mapaDiv = document.getElementById(`map-${dogId}`);
-    if (!mapaDiv) return;
-  
-    // Destruir mapa existente si hay uno
-    if (mapaDiv._map) {
-      mapaDiv._map.remove();
-    }
-  
-    // Crear nuevo mapa
-    mapaDiv._map = L.map(mapaDiv).setView([lat, lng], 15);
-    
-    // Capa de mapa
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(mapaDiv._map);
-    
-    // Marcador con popup
-    mapaDiv._marker = L.marker([lat, lng]).addTo(mapaDiv._map)
-      .bindPopup(`<b>Perro #${dogId}</b><br>Actualizado: ${new Date().toLocaleTimeString()}`)
-      .openPopup();
-  }
-  
-  // Inicialización al cargar la página
-  document.addEventListener('DOMContentLoaded', function() {
-    // Iniciar Materialize
-    M.AutoInit();
-    
-    // Iniciar escucha de Firebase
-    iniciarEscuchaFirebase();
-  });
+
+        // Escuchar cambios EN LA LAPTOP
+        function iniciarEscuchaFirebase() {
+            database.ref('perros/').on('value', (snapshot) => {
+                const datos = snapshot.val() || {};
+
+                Object.keys(datos).forEach(dogId => {
+                    if (datos[dogId].ubicacion) {
+                        const { lat, lng } = datos[dogId].ubicacion;
+                        actualizarMapa(dogId, lat, lng);
+                    }
+                });
+            });
+        }
+
+        // Función mejorada para actualizar mapas
+        function actualizarMapa(dogId, lat, lng) {
+            const mapaDiv = document.getElementById(`map-${dogId}`);
+            if (!mapaDiv) return;
+
+            // Destruir mapa existente si hay uno
+            if (mapaDiv._map) {
+                mapaDiv._map.remove();
+            }
+
+            // Crear nuevo mapa
+            mapaDiv._map = L.map(mapaDiv).setView([lat, lng], 15);
+
+            // Capa de mapa
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(mapaDiv._map);
+
+            // Marcador con popup
+            mapaDiv._marker = L.marker([lat, lng]).addTo(mapaDiv._map)
+                .bindPopup(`<b>Perro #${dogId}</b><br>Actualizado: ${new Date().toLocaleTimeString()}`)
+                .openPopup();
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            // Iniciar Materialize
+            M.AutoInit();
+
+            // Iniciar escucha de Firebase
+            iniciarEscuchaFirebase();
+        });
     </script>
 </body>
 
