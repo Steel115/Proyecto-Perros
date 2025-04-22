@@ -426,37 +426,153 @@
         }
 
         // Función mejorada para actualizar mapas
-        function actualizarMapa(dogId, lat, lng) {
+        function reportarUbicacion(dogId) {
+            if (!navigator.geolocation) {
+              mostrarNotificacion('Tu navegador no soporta geolocalización', 'red');
+              return;
+            }
+          
+            mostrarNotificacion('Obteniendo ubicación...', 'blue');
+            
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                guardarUbicacionFirebase(dogId, lat, lng);
+                mostrarNotificacion(`Ubicación de perro ${dogId} reportada!`, 'green');
+              },
+              (error) => {
+                mostrarNotificacion(`Error: ${error.message}`, 'red');
+              },
+              { enableHighAccuracy: true, timeout: 10000 }
+            );
+          }
+          
+          /**
+           * Guarda la ubicación en Firebase
+           * @param {number} dogId - ID del perro
+           * @param {number} lat - Latitud
+           * @param {number} lng - Longitud
+           */
+          function guardarUbicacionFirebase(dogId, lat, lng) {
+            database.ref(`perros/${dogId}`).update({
+              ubicacion: { lat, lng },
+              timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+          }
+          
+          /**
+           * Actualiza el mapa de un perro específico
+           * @param {number} dogId - ID del perro
+           * @param {number} lat - Latitud
+           * @param {number} lng - Longitud
+           */
+          function actualizarMapa(dogId, lat, lng) {
             const mapaDiv = document.getElementById(`map-${dogId}`);
             if (!mapaDiv) return;
-
-            // Destruir mapa existente si hay uno
+          
+            // Destruir mapa existente
             if (mapaDiv._map) {
-                mapaDiv._map.remove();
+              mapaDiv._map.remove();
             }
-
+          
             // Crear nuevo mapa
             mapaDiv._map = L.map(mapaDiv).setView([lat, lng], 15);
-
-            // Capa de mapa
+            
+            // Capa del mapa (OpenStreetMap)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(mapaDiv._map);
-
-            // Marcador con popup
-            mapaDiv._marker = L.marker([lat, lng]).addTo(mapaDiv._map)
-                .bindPopup(`<b>Perro #${dogId}</b><br>Actualizado: ${new Date().toLocaleTimeString()}`)
-                .openPopup();
-        }
-
-        // Inicialización al cargar la página
-        document.addEventListener('DOMContentLoaded', function () {
-            // Iniciar Materialize
+            
+            // Marcador personalizado por perro
+            const icono = L.divIcon({
+              className: `marker-dog-${dogId}`,
+              html: `<div style="background-color: ${getColorPorPerro(dogId)}">${dogId}</div>`,
+              iconSize: [30, 30]
+            });
+            
+            // Crear marcador
+            mapaDiv._marker = L.marker([lat, lng], { icon: icono })
+              .addTo(mapaDiv._map)
+              .bindPopup(`
+                <b>Perro #${dogId}</b><br>
+                <small>Actualizado: ${new Date().toLocaleTimeString()}</small>
+              `);
+          }
+          
+          /**
+           * Obtiene color único para cada perro
+           */
+          function getColorPorPerro(dogId) {
+            const colores = ['#FF5733', '#33A1FF', '#33FF57', '#FF33F1', '#F4FF33'];
+            return colores[dogId % colores.length];
+          }
+          
+          // =============================================
+          // Listeners y Eventos
+          // =============================================
+          
+          /**
+           * Inicia la escucha de cambios en Firebase para todos los perros
+           */
+          function iniciarEscuchaPerros() {
+            // IDs de tus perros (actualiza según tu aplicación)
+            const perrosIds = [1, 2, 3]; 
+            
+            perrosIds.forEach(id => {
+              database.ref(`perros/${id}`).on('value', snapshot => {
+                const datos = snapshot.val();
+                if (datos && datos.ubicacion) {
+                  actualizarMapa(id, datos.ubicacion.lat, datos.ubicacion.lng);
+                }
+              });
+            });
+          }
+          
+          /**
+           * Carga las ubicaciones iniciales al abrir la página
+           */
+          function cargarUbicacionesIniciales() {
+            database.ref('perros').once('value').then(snapshot => {
+              const datos = snapshot.val() || {};
+              Object.keys(datos).forEach(dogId => {
+                if (datos[dogId].ubicacion) {
+                  actualizarMapa(dogId, datos[dogId].ubicacion.lat, datos[dogId].ubicacion.lng);
+                }
+              });
+            });
+          }
+          
+          /**
+           * Muestra notificaciones al usuario
+           */
+          function mostrarNotificacion(mensaje, color) {
+            M.toast({ html: mensaje, classes: color });
+          }
+          
+          // =============================================
+          // Inicialización al Cargar la Página
+          // =============================================
+          
+          document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar componentes de Materialize
             M.AutoInit();
-
+            
             // Iniciar escucha de Firebase
-            iniciarEscuchaFirebase();
-        });
+            iniciarEscuchaPerros();
+            
+            // Cargar ubicaciones existentes
+            cargarUbicacionesIniciales();
+            
+            // Configurar botones (opcional si usas onclick en HTML)
+            document.querySelectorAll('.locate-btn').forEach(btn => {
+              btn.addEventListener('click', function() {
+                const dogId = this.getAttribute('data-id');
+                reportarUbicacion(dogId);
+              });
+            });
+          });
     </script>
 </body>
 
